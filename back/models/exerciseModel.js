@@ -7,7 +7,7 @@ const exerciseModel = mongoose.Schema(
 			type: Number,
 			require: true,
 		},
-		imageId: {
+		imageIdx: {
 			type: Number,
 			require: true,
 		},

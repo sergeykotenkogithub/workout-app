@@ -5,12 +5,15 @@ import {
 	updateExerciseLog,
 	updateCompleteExerciseLog,
 } from '../controllers/exercise/log/updateController.js'
-import { createNewExercise } from '../controllers/exercise/mainController.js'
+import {
+	createNewExercise,
+	updateExercise,
+} from '../controllers/exercise/mainController.js'
 import { protect } from '../middleware/authMiddleware.js'
 
 const router = express.Router()
 
-router.route('/').post(protect, createNewExercise)
+router.route('/').post(protect, createNewExercise).put(protect, updateExercise)
 
 router
 	.route('/log')
