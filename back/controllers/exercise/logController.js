@@ -1,4 +1,5 @@
 import asyncHandler from 'express-async-handler'
+import { reBuildTimes } from '../../helper/exerciseLog.js'
 import ExerciseLog from '../../models/exerciseLogModel.js'
 
 // @desc Create new exercises
@@ -10,20 +11,11 @@ export const createNewExerciseLog = asyncHandler(async (req, res) => {
 
 	let timesArray = []
 
-	const prevExercise = await ExerciseLog.find({
-		user: req.user._id,
-		exercise: exerciseId,
-	}).sort('desc')
-
-	if (prevExercise[0]) {
-		timesArray = prevExercise[0].times
-	} else {
-		for (let i = 0; i < times; i++) {
-			timesArray.push({
-				weight: 0,
-				repeat: 0,
-			})
-		}
+	for (let i = 0; i < times; i++) {
+		timesArray.push({
+			weight: 0,
+			repeat: 0,
+		})
 	}
 
 	const exerciseLog = await ExerciseLog.create({
@@ -42,9 +34,23 @@ export const createNewExerciseLog = asyncHandler(async (req, res) => {
 // @access Private
 
 export const getExerciseLog = asyncHandler(async (req, res) => {
-	const exerciseLog = await ExerciseLog.findById(req.params.id).populate(
-		'exercise',
-		'name imageId'
-	)
-	res.json(exerciseLog)
+	const exerciseLog = await ExerciseLog.findById(req.params.id)
+		.populate('exercise', 'name imageId')
+		.lean()
+
+	const prevExerciseLogs = await ExerciseLog.find({
+		user: req.user._id,
+		exercise: exerciseLog._id,
+	}).sort('desc')
+
+	const prevExLog = prevExerciseLogs[0]
+
+	let newTimes = reBuildTimes(exerciseLog)
+
+	if (prevExLog) newTimes = reBuildTimes(exerciseLog, prevExLog)
+
+	res.json({
+		...exerciseLog,
+		times: newTimes,
+	})
 })
