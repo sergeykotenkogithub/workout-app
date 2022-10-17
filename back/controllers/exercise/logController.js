@@ -1,12 +1,11 @@
-import Exercise from '../../models/exerciseModel.js'
 import asyncHandler from 'express-async-handler'
 import ExerciseLog from '../../models/exerciseLogModel.js'
 
-// @desc Get exercises
-// @route GET /api/exercises/log
+// @desc Create new exercises
+// @route POST /api/exercises/log
 // @access Private
 
-export const addNewExerciseLog = asyncHandler(async (req, res) => {
+export const createNewExerciseLog = asyncHandler(async (req, res) => {
 	const { exerciseId, times } = req.body
 
 	let timesArray = []
@@ -33,5 +32,19 @@ export const addNewExerciseLog = asyncHandler(async (req, res) => {
 		times: timesArray,
 	})
 	// res.json(true)
+	res.json(exerciseLog)
+})
+
+// ............. Get
+
+// @desc Get exercises
+// @route GET /api/exercises/log/:id
+// @access Private
+
+export const getExerciseLog = asyncHandler(async (req, res) => {
+	const exerciseLog = await ExerciseLog.findById(req.params.id).populate(
+		'exercise',
+		'name imageId'
+	)
 	res.json(exerciseLog)
 })
