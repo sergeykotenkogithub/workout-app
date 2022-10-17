@@ -2,19 +2,20 @@ import mongoose from 'mongoose'
 
 const { ObjectId } = mongoose.Schema
 
-const workoutModel = mongoose.Schema(
+const workoutSchema = mongoose.Schema(
 	{
 		name: { type: String, require: true },
 		exercises: [
 			{
 				type: ObjectId,
 				ref: 'Exercise',
+				required: true,
 			},
 		],
-		images: {
-			type: String,
-			require: true,
-		},
+		// images: {
+		// 	type: String,
+		// 	require: true,
+		// },
 	},
 	{
 		minimize: false,
@@ -22,6 +23,6 @@ const workoutModel = mongoose.Schema(
 	}
 )
 
-const Workout = mongoose.model('Workout', workoutModel)
+const Workout = mongoose.model('Workout', workoutSchema)
 
 export default Workout

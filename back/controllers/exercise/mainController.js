@@ -2,7 +2,7 @@ import Exercise from '../../models/exerciseModel.js'
 import asyncHandler from 'express-async-handler'
 
 // @desc Add new exercises
-// @route GET /api/users/profile
+// @route POST /api/exercises
 // @access Private
 
 export const addNewExercise = asyncHandler(async (req, res) => {
