@@ -1,7 +1,7 @@
 import asyncHandler from 'express-async-handler'
 import ExerciseLog from '../../../models/exerciseLogModel.js'
 
-// @desc Update new exercises
+// @desc Update exercise log
 // @route PUT /api/exercises/log
 // @access Private
 
@@ -31,8 +31,25 @@ export const updateExerciseLog = asyncHandler(async (req, res) => {
 	res.json(updateLog)
 })
 
-// ............. Get
+// ............................................
 
-// @desc Get exercises
-// @route GET /api/exercises/log/:id
+// @desc Update status of complete exercise log
+// @route PUT /api/exercises/log/complete
 // @access Private
+
+export const updateCompleteExerciseLog = asyncHandler(async (req, res) => {
+	const { logId, completed } = req.body
+
+	const currentLog = await ExerciseLog.findById(logId)
+
+	if (!currentLog) {
+		res.status(404)
+		throw new Error('Данный лог не найден')
+	}
+
+	currentLog.completed = completed
+
+	const updateLog = await currentLog.save()
+
+	res.json(updateLog)
+})
