@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 const { ObjectId } = mongoose.Schema
 
-const workoutLogModel = mongoose.Schema(
+const workoutLogSchema = mongoose.Schema(
 	{
 		user: {
 			type: ObjectId,
@@ -25,6 +25,6 @@ const workoutLogModel = mongoose.Schema(
 	}
 )
 
-const WorkoutLog = mongoose.model('WorkoutLog', workoutLogModel)
+const WorkoutLog = mongoose.model('WorkoutLog', workoutLogSchema)
 
 export default WorkoutLog

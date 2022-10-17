@@ -9,11 +9,7 @@ const exerciseLogSchema = mongoose.Schema(
 			ref: 'User',
 			required: true,
 		},
-		workout: {
-			type: ObjectId,
-			ref: 'Workout',
-			required: true,
-		},
+		// workout: { type: ObjectId, ref: 'Workout', required: true },
 		exercise: {
 			type: ObjectId,
 			ref: 'Exercise',
@@ -23,10 +19,10 @@ const exerciseLogSchema = mongoose.Schema(
 			type: Boolean,
 			default: false,
 		},
-		weight: {
-			type: Number,
-			required: true,
-		},
+		// weight: {
+		// 	type: Number,
+		// 	// required: true,
+		// },
 		times: [
 			{
 				weight: { type: Number, required: true },
@@ -44,6 +40,6 @@ const exerciseLogSchema = mongoose.Schema(
 	}
 )
 
-const WorkoutLog = mongoose.model('WorkoutLog', exerciseLogSchema)
+const ExerciseLog = mongoose.model('ExerciseLog', exerciseLogSchema)
 
-export default WorkoutLog
+export default ExerciseLog
