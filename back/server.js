@@ -5,7 +5,8 @@ import color from 'colors'
 
 // Router
 import userRoutes from './router/userRoutes.js'
-// import exerciseRoutes from './router/exerciseRoutes.js'
+import exerciseRoutes from './router/exerciseRoutes.js'
+import workoutRoutes from './router/workoutRoutes.js'
 
 // Config
 import { connectDB } from './config/db.js'
@@ -23,7 +24,8 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json())
 
 app.use('/api/users', userRoutes)
-// app.use('/api/exercises', exerciseRoutes)
+app.use('/api/exercises', exerciseRoutes)
+app.use('/api/workout', workoutRoutes)
 
 app.use(notFound)
 app.use(errorHandler)

@@ -1,23 +1,23 @@
-// import mongoose from 'mongoose'
+import mongoose from 'mongoose'
 
-// const exerciseModel = mongoose.Schema(
-// 	{
-// 		name: { type: String, require: true },
-// 		times: {
-// 			type: Number,
-// 			require: true,
-// 		},
-// 		images: {
-// 			type: String,
-// 			require: true,
-// 		},
-// 	},
-// 	{
-// 		minimize: false,
-// 		timestamps: true,
-// 	}
-// )
+const exerciseModel = mongoose.Schema(
+	{
+		name: { type: String, require: true },
+		times: {
+			type: Number,
+			require: true,
+		},
+		images: {
+			type: String,
+			require: true,
+		},
+	},
+	{
+		minimize: false,
+		timestamps: true,
+	}
+)
 
-// const Exercise = mongoose.model('User', exerciseModel)
+const Exercise = mongoose.model('Exercise', exerciseModel)
 
-// export default Exercise
+export default Exercise
