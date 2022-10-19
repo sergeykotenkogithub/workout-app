@@ -58,3 +58,12 @@ export const deleteExercise = asyncHandler(async (req, res) => {
 
 	res.json({ message: 'Упражнение удалено' })
 })
+
+// @desc Get exercises
+// @route GET /api/exercises
+// @access Private
+
+export const getExercises = asyncHandler(async (req, res) => {
+	const exercise = await Exercise.find({})
+	res.json(exercise)
+})
