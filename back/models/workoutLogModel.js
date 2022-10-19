@@ -18,6 +18,12 @@ const workoutLogSchema = mongoose.Schema(
 			type: Boolean,
 			default: true,
 		},
+		exerciseLogs: [
+			{
+				type: ObjectId,
+				ref: 'ExerciseLog',
+			},
+		],
 	},
 	{
 		minimize: false,

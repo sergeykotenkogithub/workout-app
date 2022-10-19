@@ -8,13 +8,14 @@ export const getExerciseLog = asyncHandler(async (req, res) => {
 		.lean()
 
 	if (!exerciseLog) {
+		res.status(404)
 		throw new Error('Лог не найден')
 	}
 
 	const prevExerciseLogs = await ExerciseLog.find({
 		user: req.user._id,
 		exercise: exerciseLog._id,
-	}).sort('desc')
+	}).sort({ createdAt: 'desc' })
 
 	const prevExLog = prevExerciseLogs[0]
 

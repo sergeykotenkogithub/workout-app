@@ -17,7 +17,7 @@ export const updateExerciseLog = asyncHandler(async (req, res) => {
 
 	let newTimes = currentLog.times
 
-	if (!timeIndex || !key || !value) {
+	if ((!timeIndex && timeIndex !== 0) || !key || (!value && value !== false)) {
 		res.status(404)
 		throw new Error('Вы не указали все поля!')
 	}
@@ -40,7 +40,10 @@ export const updateExerciseLog = asyncHandler(async (req, res) => {
 export const updateCompleteExerciseLog = asyncHandler(async (req, res) => {
 	const { logId, completed } = req.body
 
-	const currentLog = await ExerciseLog.findById(logId)
+	const currentLog = await ExerciseLog.findById(logId).populate(
+		'exercise',
+		'workout'
+	)
 
 	if (!currentLog) {
 		res.status(404)
