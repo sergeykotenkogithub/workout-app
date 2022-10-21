@@ -7,8 +7,8 @@
 	"scripts": {
 		"start": "node back/server",
 		"server": "nodemon back/server",
-		"client": "yarn dev --prefix front",
-		"dev": "concurrently \"yarn server\" \"yarn client"
+		"client": "yarn --cwd front start",
+		"dev": "concurrently \"yarn server\" \"yarn client\""
 	},
 	"type": "module",
 	"dependencies": {
