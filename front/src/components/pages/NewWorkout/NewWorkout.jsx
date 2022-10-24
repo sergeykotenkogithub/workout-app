@@ -4,7 +4,7 @@ import bgImage from '../../../images/new-workout-bg.jpg'
 import Field from '../../ui/Field/Field'
 import { useState } from 'react'
 import Button from '../../ui/Button/Button'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import styles from './NewWorkout.module.scss'
 import ReactSelect from 'react-select'
 import { optionColor } from '../../ui/optionColor'
@@ -28,6 +28,9 @@ const NewWorkout = () => {
 						onChange={({ target }) => setName(target.value)}
 						required
 					/>
+					<Link to='/new-exercise' className='dark-link'>
+						Add New exercise
+					</Link>
 					<ReactSelect
 						classNamePrefix='select2-selection'
 						placeholder='Exercises'
