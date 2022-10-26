@@ -4,7 +4,7 @@ import bgImage from '../../../images/auth-bg.png'
 import Field from '../../ui/Field/Field'
 import { useState } from 'react'
 import Button from '../../ui/Button/Button'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import ReactSelect from 'react-select'
 import { optionColor } from '../../ui/optionColor'
 import styles from './Auth.module.scss'
@@ -13,6 +13,7 @@ import Alert from '../../ui/Alert/Alert'
 import { useMutation } from 'react-query'
 import { $api } from '../../../api/api'
 import Loader from '../../ui/Loader'
+import { useAuth } from '../../../hooks/useAuth'
 
 const Auth = () => {
 	// e.preventDefault()
@@ -20,6 +21,9 @@ const Auth = () => {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [type, setType] = useState('auth')
+
+	const navigate = useNavigate()
+	const { setIsAuth } = useAuth()
 
 	const {
 		mutate: register,
@@ -38,6 +42,12 @@ const Auth = () => {
 		{
 			onSuccess(data) {
 				localStorage.setItem('token', data.token)
+
+				setIsAuth(true)
+				setPassword('')
+				setEmail('')
+
+				navigate('/')
 			},
 		}
 	)
