@@ -6,12 +6,12 @@ import asyncHandler from 'express-async-handler'
 // @access Private
 
 export const createNewExercise = asyncHandler(async (req, res) => {
-	const { name, times, imageIndex } = req.body
+	const { name, times, imageName } = req.body
 
 	const exercise = await Exercise.create({
 		name,
 		times,
-		imageIdx: imageIndex,
+		imageName,
 	})
 
 	res.json(exercise)
@@ -22,7 +22,7 @@ export const createNewExercise = asyncHandler(async (req, res) => {
 // @access Private
 
 export const updateExercise = asyncHandler(async (req, res) => {
-	const { name, times, imageIndex, exerciseId } = req.body
+	const { name, times, imageName, exerciseId } = req.body
 
 	const exercise = await Exercise.findById(exerciseId)
 
@@ -33,7 +33,7 @@ export const updateExercise = asyncHandler(async (req, res) => {
 
 	exercise.name = name
 	exercise.times = times
-	exercise.imageIdx = imageIndex
+	exercise.imageName = imageName
 
 	const updateWorkout = await exercise.save()
 

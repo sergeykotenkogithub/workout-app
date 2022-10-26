@@ -25,6 +25,16 @@ const Auth = () => {
 	const navigate = useNavigate()
 	const { setIsAuth } = useAuth()
 
+	const successLogin = token => {
+		localStorage.setItem('token', token)
+
+		setIsAuth(true)
+		setPassword('')
+		setEmail('')
+
+		navigate('/')
+	}
+
 	const {
 		mutate: register,
 		isLoading,
@@ -41,13 +51,27 @@ const Auth = () => {
 			}),
 		{
 			onSuccess(data) {
-				localStorage.setItem('token', data.token)
+				successLogin(data.token)
+			},
+		}
+	)
 
-				setIsAuth(true)
-				setPassword('')
-				setEmail('')
-
-				navigate('/')
+	const {
+		mutate: auth,
+		isLoading: isLoadingAuth,
+		error: errorAuth,
+	} = useMutation(
+		'Auth',
+		() =>
+			$api({
+				url: '/users/login',
+				type: 'POST',
+				body: { email, password },
+				auth: false,
+			}),
+		{
+			onSuccess(data) {
+				successLogin(data.token)
 			},
 		}
 	)
@@ -55,7 +79,7 @@ const Auth = () => {
 	const handleSubmit = e => {
 		e.preventDefault()
 		if (type === 'auth') {
-			console.log('Auth')
+			auth()
 		} else {
 			register()
 		}
@@ -67,7 +91,8 @@ const Auth = () => {
 			<div className='wrapper-inner-page'>
 				<form onSubmit={handleSubmit}>
 					{error && <Alert type='error' text={error} />}
-					{isLoading && <Loader />}
+					{errorAuth && <Alert type='error' text={error} />}
+					{(isLoading || isLoadingAuth) && <Loader />}
 					<Field
 						type='email'
 						placeholder='Enter email'
