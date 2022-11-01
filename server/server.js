@@ -40,8 +40,8 @@ if (process.env.NODE_ENV === 'production') {
 	})
 }
 
-app.use(notFound)
-app.use(errorHandler)
+// app.use(notFound)
+// app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000
 
