@@ -9,9 +9,9 @@
 		"client": "yarn --cwd client start",
 		"dev": "concurrently \"yarn server\" \"yarn client\"",
 		"start": "concurrently \"yarn server\" \"yarn client\"",
-		"build": "cd front && yarn build",
+		"build": "cd client && yarn build",
 		"install-client": "cd client && yarn install",
-		"heroku-postbuild": "NPM_CONFIG_PRODUCTION=false yarn --cwd client install-client && yarn --cwd client build"
+		"heroku-postbuild": "NPM_CONFIG_PRODUCTION=false yarn --cwd client && yarn --cwd client build"
 	},
 	"type": "module",
 	"dependencies": {
