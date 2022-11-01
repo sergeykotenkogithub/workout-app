@@ -28,7 +28,7 @@ const exerciseLogSchema = mongoose.Schema(
 				},
 			},
 		],
-		workoutLog: { type: ObjectId, ref: 'WorkoutLog', required: true },
+		workoutLog: { type: ObjectId, ref: 'WorkoutLog' },
 	},
 	{
 		minimize: false,
