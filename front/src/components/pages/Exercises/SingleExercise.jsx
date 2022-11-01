@@ -14,11 +14,12 @@ import { useMutation, useQuery } from 'react-query'
 import { $api } from '../../../api/api'
 import Header from '../../common/Header/Header'
 
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import Alert from '../../ui/Alert/Alert'
 
 import cn from 'classnames'
+import debounce from 'lodash.debounce'
 
 const getRandomInt = (min, max) => {
 	min = Math.ceil(min)
@@ -29,7 +30,13 @@ const getRandomInt = (min, max) => {
 const SingleExercise = () => {
 	const { id } = useParams()
 
+	const navigate = useNavigate()
+
 	const [bgImage, setBgImage] = useState(bgImage1)
+
+	useEffect(() => {
+		setBgImage(getRandomInt(1, 2) === 1 ? bgImage1 : bgImage2)
+	}, [])
 
 	const { data, isSuccess, refetch } = useQuery(
 		'get exercise log',
@@ -49,7 +56,21 @@ const SingleExercise = () => {
 				url: '/exercises/log',
 				type: 'PUT',
 				body: { timeIndex, key, value, logId: id },
-				auth: false,
+			}),
+		{
+			onSuccess(data) {
+				navigate(-1)
+			},
+		}
+	)
+
+	const { mutate: setExCompleted, error: errorCompleted } = useMutation(
+		'Change log state',
+		({ timeIndex, key, value }) =>
+			$api({
+				url: '/exercises/log/completed',
+				type: 'PUT',
+				body: { logId: id, completed: true },
 			}),
 		{
 			onSuccess(data) {
@@ -59,8 +80,15 @@ const SingleExercise = () => {
 	)
 
 	useEffect(() => {
-		setBgImage(getRandomInt(1, 2) === 1 ? bgImage1 : bgImage2)
-	}, [])
+		if (
+			isSuccess &&
+			data.times.length === data.times.filter(time => time.completed).length &&
+			data._id === id
+		) {
+			setExCompleted()
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data?.times, isSuccess])
 
 	return (
 		<>
@@ -129,30 +157,35 @@ const SingleExercise = () => {
 								</div>
 								<div>
 									<input
-										type='number'
+										type='tel'
+										pattern='[0-9]*'
 										defaultValue={item.weight}
-										onChange={e =>
-											e.target.value &&
-											changeState({
-												timeIndex: idx,
-												key: 'weight',
-												value: e.target.value,
-											})
-										}
+										onChange={debounce(
+											e =>
+												e.target.value &&
+												changeState({
+													timeIndex: idx,
+													key: 'weight',
+													value: e.target.value,
+												}),
+											800
+										)}
 										disabled={item.completed}
 									/>
 									<i>kg /</i>
 									<input
 										type='number'
 										defaultValue={item.repeat}
-										onChange={e =>
-											e.target.value &&
-											changeState({
-												timeIndex: idx,
-												key: 'repeat',
-												value: e.target.value,
-											})
-										}
+										onChange={debounce(
+											e =>
+												e.target.value &&
+												changeState({
+													timeIndex: idx,
+													key: 'repeat',
+													value: e.target.value,
+												}),
+											800
+										)}
 										disabled={item.completed}
 									/>
 								</div>
