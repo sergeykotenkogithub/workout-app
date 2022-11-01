@@ -7,11 +7,11 @@
 	"scripts": {
 		"server": "nodemon server/server",
 		"client": "yarn --cwd client start",
-		"dev": "concurrently \"yarn server\" \"yarn client\"",
-		"start": "concurrently \"yarn server\" \"yarn client\"",
-		"build": "cd client && yarn build",
-		"install-client": "cd client && yarn install",
-		"heroku-postbuild": "NPM_CONFIG_PRODUCTION=false yarn --cwd client && yarn --cwd client build"
+		"dev": "concurrently  \"yarn server\" \"yarn client\"",
+		"start": "concurrently  \"yarn server\" \"yarn client\"",
+		"build": "cd client && npm run build",
+		"install-client": "cd client && npm install",
+		"heroku-postbuild": "npm run install-client && npm run build"
 	},
 	"type": "module",
 	"dependencies": {
