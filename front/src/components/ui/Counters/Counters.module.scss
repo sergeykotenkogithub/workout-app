@@ -1,10 +1,11 @@
 @import '../.././/../scss/variables';
+
 .wrapper {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 
-	.profile {
+	&.profile {
 		> .count .heading {
 			color: #775f5f;
 		}
@@ -14,18 +15,16 @@
 		width: 27%;
 		font-size: 24px;
 		text-align: center;
-		// display: flex;
-		// flex-direction: column;
-		// justify-content: center;
-		// align-items: center;
-
+		@media (max-width: $mobile) {
+			font-size: 18px;
+		}
 		.heading {
-			color: $light-purple;
+			color: $purple;
 			text-transform: capitalize;
 		}
 		.number {
 			font-weight: bold;
-			text-align: center;
+			color: #fff;
 		}
 	}
 }

@@ -5,7 +5,7 @@ import hamburgerImage from '../../../../images/header/hamburger.svg'
 import hamburgerCloseImage from '../../../../images/header/hamburger-close.svg'
 
 import styles from './Hamburger.module.scss'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { menu } from './menuBase'
 import { useOutsideAlerter } from '../../../../hooks/useOutsideAlerter'
 import { useAuth } from '../../../../hooks/useAuth'
@@ -14,12 +14,14 @@ const Hamburger = () => {
 	const { setIsAuth } = useAuth()
 	const { ref, isComponentVisible, setIsComponentVisible } =
 		useOutsideAlerter(false)
-	// const [show, setShow] = useState(false)
+	const navigate = useNavigate()
 
 	const handleLogout = () => {
 		localStorage.removeItem('token')
 		setIsAuth(true)
 		setIsComponentVisible(false)
+		navigate('/')
+		window.location.reload()
 	}
 
 	return (
@@ -32,6 +34,8 @@ const Hamburger = () => {
 					src={isComponentVisible ? hamburgerCloseImage : hamburgerImage}
 					alt='Menu'
 					draggable={false}
+					height='24'
+					width='27'
 				/>
 			</button>
 			<nav
