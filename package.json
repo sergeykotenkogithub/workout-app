@@ -5,10 +5,13 @@
 	"author": "Kotenko Sergey",
 	"license": "MIT",
 	"scripts": {
-		"start": "node back/server",
 		"server": "nodemon back/server",
 		"client": "yarn --cwd front start",
-		"dev": "concurrently \"yarn server\" \"yarn client\""
+		"dev": "concurrently --kill-other-on-fail \"yarn server\" \"yarn client\"",
+		"start": "concurrently --kill-other-on-fail \"yarn server\" \"yarn client\"",
+		"build": "cd front && npm run build",
+		"install-client": "cd front && npm install",
+		"heroku-postbuild": "npm run install-client && npm run build"
 	},
 	"type": "module",
 	"dependencies": {
