@@ -20,6 +20,7 @@ import Alert from '../../ui/Alert/Alert'
 
 import cn from 'classnames'
 import debounce from 'lodash.debounce'
+import Loader from '../../ui/Loader'
 
 const getRandomInt = (min, max) => {
 	min = Math.ceil(min)
@@ -38,15 +39,12 @@ const SingleExercise = () => {
 		setBgImage(getRandomInt(1, 2) === 1 ? bgImage1 : bgImage2)
 	}, [])
 
-	const { data, isSuccess, refetch } = useQuery(
+	const { data, isSuccess, refetch, isLoading } = useQuery(
 		'get exercise log',
 		() =>
 			$api({
 				url: `/exercises/log/${id}`,
-			}),
-		{
-			refetchOnWindowFocus: false,
-		}
+			})
 	)
 
 	const { mutate: changeState, error: errorChange } = useMutation(
@@ -58,23 +56,23 @@ const SingleExercise = () => {
 				body: { timeIndex, key, value, logId: id },
 			}),
 		{
-			onSuccess(data) {
-				navigate(-1)
+			onSuccess() {
+				refetch()
 			},
 		}
 	)
 
 	const { mutate: setExCompleted, error: errorCompleted } = useMutation(
 		'Change log state',
-		({ timeIndex, key, value }) =>
+		() =>
 			$api({
 				url: '/exercises/log/completed',
 				type: 'PUT',
 				body: { logId: id, completed: true },
 			}),
 		{
-			onSuccess(data) {
-				refetch()
+			onSuccess() {
+				navigate(`/workout/${data.workoutLog}`)
 			},
 		}
 	)
@@ -93,21 +91,22 @@ const SingleExercise = () => {
 	return (
 		<>
 			<div
-				className={`${stylesLayout.wrapper} ${stylesLayout.otherPage} single-workout`}
+				className={`${stylesLayout.wrapper} ${stylesLayout.otherPage}`}
 				style={{
 					backgroundImage: `url(${bgImage})`,
 					height: 356,
-					backgroundPosition: 'inherit',
 				}}
 			>
-				<Header />
+				<Header
+					backLink={isSuccess ? `/workout/${data.workoutLog}` : '/workouts'}
+				/>
 
 				{isSuccess && (
 					<div className={styles.heading}>
 						<img
 							src={`/uploads/exercises/${data.exercise.imageName}.svg`}
 							height='34'
-							alt={data.exercise.name}
+							alt=''
 							draggable={false}
 						/>
 						<h1 className={stylesLayout.heading}>{data.exercise.name}</h1>
@@ -120,9 +119,11 @@ const SingleExercise = () => {
 			>
 				<div style={{ width: '90%', margin: '0 auto' }}>
 					{errorChange && <Alert type='error' text={errorChange} />}
+					{errorCompleted && <Alert type='error' text={errorCompleted} />}
 				</div>
-
-				{isSuccess ? (
+				{isLoading || (isSuccess && data._id !== id) ? (
+					<Loader />
+				) : (
 					<div className={styles.wrapper}>
 						<div className={styles.row}>
 							<div>
@@ -142,7 +143,10 @@ const SingleExercise = () => {
 								})}
 								key={`time ${idx}`}
 							>
-								<div className={styles.opacity}>
+								<div
+									className={styles.opacity}
+									key={`Prev ${idx}/${item.prevWeight}`}
+								>
 									<input
 										type='number'
 										defaultValue={item.prevWeight}
@@ -155,7 +159,8 @@ const SingleExercise = () => {
 										disabled
 									/>
 								</div>
-								<div>
+
+								<div key={`RepeatWeight ${idx}/${item.weight}`}>
 									<input
 										type='tel'
 										pattern='[0-9]*'
@@ -168,11 +173,11 @@ const SingleExercise = () => {
 													key: 'weight',
 													value: e.target.value,
 												}),
-											800
+											2000
 										)}
 										disabled={item.completed}
 									/>
-									<i>kg /</i>
+									<i>kg{item.completed ? '' : ' '}/</i>
 									<input
 										type='number'
 										defaultValue={item.repeat}
@@ -189,24 +194,27 @@ const SingleExercise = () => {
 										disabled={item.completed}
 									/>
 								</div>
-								<div>
+
+								<div key={`Completed ${idx}/${item.completed}`}>
 									<img
 										src={item.completed ? checkCompletedImage : checkImage}
 										className={styles.checkbox}
 										alt=''
-										onClick={() =>
+										onClick={() => {
 											changeState({
 												timeIndex: idx,
 												key: 'completed',
 												value: !item.completed,
 											})
-										}
+										}}
 									/>
 								</div>
 							</div>
 						))}
 					</div>
-				) : (
+				)}
+
+				{isSuccess && data?.times?.length === 0 && (
 					<Alert type='warning' text='Times not found' />
 				)}
 			</div>

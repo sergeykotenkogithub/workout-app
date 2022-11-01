@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler'
 import WorkoutLog from '../../models/workoutLogModel.js'
 import Workout from '../../models/workoutModel.js'
+import ExerciseLog from '../../models/exerciseLogModel.js'
 
 // @desc Create new workout log
 // @route POST /api/workouts/log
@@ -80,7 +81,7 @@ export const getWorkoutLog = asyncHandler(async (req, res) => {
 })
 
 // @desc Update workout log completed
-// @route PUT /api/workouts/log/:id
+// @route PUT /api/workouts/log/completed
 // @access Private
 export const updateCompleteWorkoutLog = asyncHandler(async (req, res) => {
 	const { logId } = req.body

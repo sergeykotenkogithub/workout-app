@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import Layout from '../../common/Layout'
 
 import bgImage from '../../../images/home-bg.jpg'
@@ -15,59 +15,59 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 
 import Alert from '../../ui/Alert/Alert'
 import Loader from '../../ui/Loader'
+import cn from 'classnames'
 
 const SingleWorkout = () => {
 	const { id } = useParams()
 
 	const navigate = useNavigate()
 
-	const { data, isSuccess } = useQuery(
-		'get workout',
-		() =>
-			$api({
-				url: `/workouts/${id}`,
-			}),
-		{
-			refetchOnWindowFocus: false,
-		}
+	const { data, isSuccess, isLoading } = useQuery('get workout', () =>
+		$api({
+			url: `/workouts/log/${id}`,
+		})
 	)
 
-	const {
-		mutate,
-		isLoading,
-		isSuccess: isSuccessMutate,
-		error,
-	} = useMutation(
-		'Create new ex log',
-		({ exId, times }) =>
+	const { mutate: setWorkoutCompleted, error: errorCompleted } = useMutation(
+		'Change log state',
+		() =>
 			$api({
-				url: '/exercises/log',
-				type: 'POST',
-				body: { exerciseId: exId, times },
+				url: '/workouts/log/completed',
+				type: 'PUT',
+				body: { logId: id },
 			}),
 		{
-			onSuccess(data) {
-				navigate(`/exercise/${data._id}`)
+			onSuccess() {
+				navigate(`/workouts`)
 			},
 		}
 	)
 
+	useEffect(() => {
+		if (
+			isSuccess &&
+			data?.exerciseLogs &&
+			data.exerciseLogs.length ===
+				data.exerciseLogs.filter(log => log.completed).length &&
+			data._id === id
+		) {
+			setWorkoutCompleted()
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data?.exerciseLogs])
+
 	return (
 		<>
 			<div
-				className={`${stylesLayout.wrapper} ${stylesLayout.otherPage} single-workout`}
-				style={{
-					backgroundImage: `url(${bgImage})`,
-					height: 356,
-					backgroundPosition: 'inherit',
-				}}
+				className={`${stylesLayout.wrapper} ${stylesLayout.otherPage}`}
+				style={{ backgroundImage: `url(${bgImage})`, height: 356 }}
 			>
-				<Header />
+				<Header backLink='/workouts' />
 
 				{isSuccess && (
 					<div>
-						<time className={styles.tme}>{data.minutes + ' min.'}</time>
-						<h1 className={stylesLayout.heading}>{data.name}</h1>
+						<time className={styles.time}>{data.minutes + ' min.'}</time>
+						<h1 className={stylesLayout.heading}>{data.workout.name}</h1>
 					</div>
 				)}
 			</div>
@@ -75,27 +75,28 @@ const SingleWorkout = () => {
 				className='wrapper-inner-page'
 				style={{ paddingLeft: 0, paddingRight: 0 }}
 			>
-				{error && <Alert type='error' text={error} />}
-				{isSuccessMutate && <Alert type='info' text='Exercise log created' />}
-				{isLoading && <Loader />}
-				{isSuccess ? (
+				<div style={{ width: '90%', margin: '0 auto' }}>
+					{errorCompleted && <Alert type='error' text={errorCompleted} />}
+				</div>
+				{isLoading || (isSuccess && data._id !== id) ? (
+					<Loader />
+				) : (
 					<div className={styles.wrapper}>
-						{data.exercises.map((ex, idx) => {
+						{data.exerciseLogs.map((exLog, idx) => {
 							return (
-								<Fragment key={`ex ${idx}`}>
-									<div className={styles.item}>
+								<Fragment key={`ex log ${idx}`}>
+									<div
+										className={cn(styles.item, {
+											[styles.completed]: exLog.completed,
+										})}
+									>
 										<button
 											aria-label='Move to exercise'
-											onClick={() =>
-												mutate({
-													exId: ex._id,
-													times: ex.times,
-												})
-											}
+											onClick={() => navigate(`/exercise/${exLog._id}`)}
 										>
-											<span>{ex.name}</span>
+											<span>{exLog.exercise.name}</span>
 											<img
-												src={`/uploads/exercises/${ex.imageName}.svg`}
+												src={`/uploads/exercises/${exLog.exercise.imageName}.svg`}
 												height='34'
 												alt=''
 												draggable={false}
@@ -109,7 +110,9 @@ const SingleWorkout = () => {
 							)
 						})}
 					</div>
-				) : (
+				)}
+
+				{isSuccess && data?.length === 0 && (
 					<Alert type='warning' text='Exercises not found' />
 				)}
 			</div>
