@@ -5,13 +5,13 @@
 	"author": "Kotenko Sergey",
 	"license": "MIT",
 	"scripts": {
-		"server": "nodemon server/server",
-		"server-start": "node server/server",
-		"start": "concurrently \"npm run server-start\" \"npm run start --prefix client\"",
-		"dev": "concurrently \"npm run server\" \"npm run start --prefix client\"",
-		"build": "cd client && npm run build",
-		"install-client": "cd client && npm install",
-		"heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+		"server": "nodemon back/server",
+		"client": "yarn --cwd front start",
+		"dev": "concurrently \"yarn server\" \"yarn client\"",
+		"start": "concurrently \"yarn server\" \"yarn client\"",
+		"build": "cd front && npm run build",
+		"install-client": "cd front && yarn install",
+		"heroku-postbuild": "NPM_CONFIG_PRODUCTION=false yarn install-client && yarn run build"
 	},
 	"type": "module",
 	"dependencies": {
