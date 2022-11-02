@@ -8,7 +8,7 @@ import path from 'path'
 import { connectDB } from './config/db.js'
 
 // /* Middleware */
-// import { errorHandler, notFound } from './middleware/errorMiddleware.js'
+import { errorHandler, notFound } from './middleware/errorMiddleware.js'
 
 /* Routes */
 import userRoutes from './router/userRoutes.js'
@@ -21,6 +21,7 @@ connectDB()
 
 const app = express()
 
+// if (process.env.NODE_ENV === 'development') app.use(morgan('dev'))
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'))
 
 app.use(express.json())
@@ -33,14 +34,14 @@ app.use(express.json())
 // app.use('/api/exercises', exerciseRoutes)
 // app.use('/api/workouts', workoutRoutes)
 
-if (process.env.NODE_ENV === 'production') {
-	// Step 1:
-	app.use(express.static(path.resolve(__dirname, './client/build')))
-	// Step 2:
-	app.get('*', function (request, response) {
-		response.sendFile(path.resolve(__dirname, './client/build', 'index.html'))
-	})
-}
+// if (process.env.NODE_ENV === 'production') {
+// 	// Step 1:
+// 	app.use(express.static(path.resolve(__dirname, './client/build')))
+// 	// Step 2:
+// 	app.get('*', function (request, response) {
+// 		response.sendFile(path.resolve(__dirname, './client/build', 'index.html'))
+// 	})
+// }
 
 // app.use(notFound)
 // app.use(errorHandler)
