@@ -4,16 +4,16 @@ import dotenv from 'dotenv'
 import colors from 'colors'
 import path from 'path'
 
-/* Config */
+// /* Config */
 import { connectDB } from './config/db.js'
 
-/* Middleware */
+// /* Middleware */
 import { errorHandler, notFound } from './middleware/errorMiddleware.js'
 
 /* Routes */
-import userRoutes from './routes/userRoutes.js'
-import exerciseRoutes from './routes/exerciseRoutes.js'
-import workoutRoutes from './routes/workoutRoutes.js'
+import userRoutes from './router/userRoutes.js'
+import exerciseRoutes from './router/exerciseRoutes.js'
+import workoutRoutes from './router/workoutRoutes.js'
 
 dotenv.config()
 
@@ -45,6 +45,11 @@ if (process.env.NODE_ENV === 'production') {
 app.use(notFound)
 app.use(errorHandler)
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5500
 
-app.listen(PORT, console.log(`Server running in ${process.env.NODE_ENV}`))
+app.listen(
+	PORT,
+	console.log(
+		`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow.bold
+	)
+)
