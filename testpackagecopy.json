@@ -1,17 +1,17 @@
 {
 	"name": "workout-app",
 	"version": "1.0.0",
-	"main": "server.js",
+	"main": "index.js",
 	"author": "Kotenko Sergey",
 	"license": "MIT",
 	"scripts": {
 		"server": "nodemon server/server",
 		"server-start": "node server/server",
-		"start": "concurrently \"npm run server-start\" \"npm run start --prefix client\"",
+		"start": "npm run start --prefix client",
 		"dev": "concurrently \"npm run server\" \"npm run start --prefix client\"",
 		"build": "cd client && npm run build",
 		"install-client": "cd client && npm install",
-		"heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+		"heroku-postbuild": "npm install --prefix client && npm run build --prefix client"
 	},
 	"type": "module",
 	"dependencies": {
@@ -22,9 +22,10 @@
 		"express-async-handler": "^1.2.0",
 		"jsonwebtoken": "^8.5.1",
 		"mongoose": "^6.6.5",
-		"morgan": "^1.10.0",
+		"morgan": "^1.10.0"
+	},
+	"devDependencies": {
 		"concurrently": "^7.4.0",
 		"nodemon": "^2.0.20"
-	},
-	"devDependencies": {}
+	}
 }
