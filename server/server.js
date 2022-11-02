@@ -1,30 +1,32 @@
 import express from 'express'
 import morgan from 'morgan'
 import dotenv from 'dotenv'
-import color from 'colors'
+import colors from 'colors'
 import path from 'path'
 
-// Router
-import userRoutes from './router/userRoutes.js'
-import exerciseRoutes from './router/exerciseRoutes.js'
-import workoutRoutes from './router/workoutRoutes.js'
-
-// Config
+/* Config */
 import { connectDB } from './config/db.js'
-// Middleware
+
+/* Middleware */
 import { errorHandler, notFound } from './middleware/errorMiddleware.js'
 
+/* Routes */
+import userRoutes from './routes/userRoutes.js'
+import exerciseRoutes from './routes/exerciseRoutes.js'
+import workoutRoutes from './routes/workoutRoutes.js'
+
 dotenv.config()
+
 connectDB()
+
 const app = express()
 
-if (process.env.NODE_ENV === 'development') {
-	app.use(morgan('dev'))
-}
+if (process.env.NODE_ENV === 'development') app.use(morgan('dev'))
 
 app.use(express.json())
 
 const __dirname = path.resolve()
+
 app.use('/uploads', express.static(path.join(__dirname, '/uploads/')))
 
 app.use('/api/users', userRoutes)
@@ -45,6 +47,4 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000
 
-app.listen(PORT, () => {
-	console.log(`on prt ${PORT}`.yellow)
-})
+app.listen(PORT, console.log(`Server running in ${process.env.NODE_ENV}`))
